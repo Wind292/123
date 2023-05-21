@@ -2,17 +2,14 @@
 import pygame
 import sys
 import os
-import pymunk.pygame_util
 from pytmx.util_pygame import load_pygame
 import loadImages as img
 
 
-pymunk.pygame_util.positive_y_is_up = False
-
 pygame.init()
 screen = pygame.display.set_mode((2000, 1080))
 
-tmx_data = load_pygame("assets/maps/baseparkor.tmx")
+tmx_data = load_pygame("assets/maps/huge.tmx")
 
 # Loads images
 grass, ground = img.load()
@@ -46,11 +43,11 @@ fps = 60
 
 gravity = .1
 
+checkinscreen = pygame.Rect(0,0,2000, 1080)
 
-player = pygame.Rect(100,100,100,100)
-
+player = pygame.Rect(250,100,100,100)
 player_speed = 15
-player_jump_speed = -500
+
 player_can_jump = False
 player_airtime = 0
 player_gravity = gravity
@@ -155,12 +152,13 @@ while True:
         for tile in TileList:
             while player.colliderect(tile) and topcoll == False:
                 player.x += 1
-                
+  
     if key[pygame.K_RIGHT]:
         player.x += player_speed
         for tile in TileList:
             while player.colliderect(tile) and topcoll == False:
                 player.x -= 1
+
     
             
 
@@ -195,10 +193,12 @@ while True:
         
     screen.fill('gray')
     for tile in GroundTileList:
-        screen.blit(ground, (tile.x, tile.y))
+        if tile.colliderect(checkinscreen):
+            screen.blit(ground, (tile.x, tile.y))
 
     for tile in GrassTileList:
-        screen.blit(grass, (tile.x, tile.y))
+        if tile.colliderect(checkinscreen):
+            screen.blit(grass, (tile.x, tile.y))
 
 
     player_bottomhitbox = pygame.Rect(player.x+1, player.y+99,98,2)
@@ -207,7 +207,7 @@ while True:
 
     pygame.draw.rect(screen, (255, 0, 0), player)
     # pygame.draw.rect(screen, (0, 0, 255), player_bottomhitbox)
-    pygame.draw.rect(screen, (0, 0, 255), player_tophitbox)
+    # pygame.draw.rect(screen, (0, 0, 255), player_tophitbox)
 
  
     
